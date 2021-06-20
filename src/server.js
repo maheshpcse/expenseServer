@@ -18,7 +18,7 @@ Model.knex(Knexx.knex);
 var app = express();
 
 // Middleware functions
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -30,6 +30,10 @@ app.use(function (req, res, next) {
     res.setHeader("Access-Control-Allow-Headers", "Origin, Authorization, x-access-token, Content-Length, X-Requested-With,Content-Type,Accept");
     res.setHeader("Access-Control-Allow-Credentials", "true");
     next();
+});
+
+app.get('*', (req, res, next) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 app.get('/get_products', (request, response, next) => {
