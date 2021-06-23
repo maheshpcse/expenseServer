@@ -9,6 +9,7 @@ const cors = require('cors');
 const _ = require('underscore');
 const fetch = require('node-fetch');
 const https = require('https');
+const mysql = require('mysql');
 var config = require('./config/config.js');
 var routes = require('./routes/routes.js');
 var Knexx = require('./config/knex.js');
@@ -34,6 +35,30 @@ app.use(function (req, res, next) {
 
 app.get('*', (req, res, next) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
+app.get('/connect', (req, res) => {
+    var connection = mysql.createConnection({
+        host: config.database.host,
+        user: config.database.username,
+        password: config.database.password,
+        database: config.database.db
+    });
+    connection.connect((err, data) => {
+        if (err) {
+            console.log('Error while db connection');
+            res.status(200).json({
+                success: false,
+                message: 'Error while db connection'
+            });
+        } else {
+            console.log('Database connection success');
+            res.status(200).json({
+                success: true,
+                message: 'Database connection success'
+            });
+        }
+    });
 });
 
 app.get('/get_products', (request, response, next) => {
