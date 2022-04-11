@@ -40,22 +40,27 @@ app.get('*', (req, res, next) => {
 app.get('/connect', (req, res) => {
     var connection = mysql.createConnection({
         host: config.database.host,
+        port: config.database.port,
         user: config.database.username,
         password: config.database.password,
         database: config.database.db
     });
     connection.connect((err, data) => {
         if (err) {
-            console.log('Error while db connection');
+            console.log('Error while db connection', err);
             res.status(200).json({
                 success: false,
-                message: 'Error while db connection'
+                error: true,
+                message: 'Error while db connection',
+                data: err
             });
         } else {
             console.log('Database connection success');
             res.status(200).json({
                 success: true,
-                message: 'Database connection success'
+                error: false,
+                message: 'Database connection success',
+                data: null
             });
         }
     });
